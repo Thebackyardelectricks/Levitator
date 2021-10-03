@@ -1,0 +1,43 @@
+const char rows = 4; 
+const char cols = 4; 
+const char keys[rows][cols] = {{'1','2','3','4'},{'A','5','6','7'},{'B','8','9','0'},{'C','*','#','D'}};
+char rowPins[rows] = {4,8,3,6};
+char colPins[cols] = {9,7,5,2};
+String send = "";
+void setup () {
+      Serial.begin(9600);
+   for(char r = 0; r < rows; r++){
+         pinMode(rowPins[r], OUTPUT);   
+         digitalWrite(rowPins[r], HIGH); 
+   }
+   for(char c = 0; c < cols; c++){
+         pinMode(colPins[c], INPUT);
+   }
+}
+
+void loop() {
+      char key = getKey();
+      if(key == 0){
+        if (send.length() > 0 || key = ""){
+            send = "";
+            send += key; 
+            Serial.println(send);
+        }     
+      }
+}
+
+char getKey(){
+      char k = 0;
+      for(char c = 0; c < cols; c++){
+        digitalWrite(colPins[c], LOW);
+         for(char r = 0; r < rows; r++){
+            if(digitalRead(rowPins[r]) == LOW){
+            delay(20);
+            while(digitalRead(rowPins[r])== LOW);
+            k = keys[r][c];
+            }
+         }
+   digitalWrite(colPins[c], HIGH); 
+      }
+      return k;
+}
